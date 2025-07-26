@@ -10,7 +10,15 @@ export function Hero() {
   return (
     <section className="relative w-full overflow-hidden py-20 md:py-32 lg:py-40">
       <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-background" />
+        <Image
+          src="https://placehold.co/1920x1080.png"
+          alt="Abstract background"
+          layout="fill"
+          objectFit="cover"
+          className="opacity-10"
+          data-ai-hint="abstract geometric pattern"
+        />
+        <div className="absolute inset-0 bg-background/80" />
         <div className="absolute inset-0 bg-gradient-to-tr from-background via-transparent to-primary/20" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(59,73,223,0.15),rgba(255,255,255,0))]"></div>
       </div>
