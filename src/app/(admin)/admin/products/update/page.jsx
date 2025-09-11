@@ -21,7 +21,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from "@/hooks/use-toast";
-import { getAllProducts, updateProduct, deleteProduct } from '@/lib/admin/productApi';
+import { getProducts, updateProduct, deleteProduct } from '@/lib/admin/productApi';
 import { Edit, Trash2, Search, Package, ChevronLeft, ChevronRight, Loader2, X } from 'lucide-react';
 
 const FADE_UP_ANIMATION = {
@@ -84,7 +84,8 @@ function UpdateProductModal({ product, isOpen, onClose, onProductUpdate }) {
                 reviewIds: product.reviewIds || [], // Add default value
             };
             const updatedProduct = await updateProduct(product.id, updateData);
-            onProductUpdate(updatedProduct.data);
+            onProductUpdate(updatedProduct); // pass the product object directly
+
             toast({ title: "Product Updated!", description: `${values.name} has been successfully updated.` });
             onClose();
         } catch (error) {
@@ -161,20 +162,27 @@ export default function AdminUpdateProductPage() {
     const productsPerPage = 8;
 
     const fetchProducts = useCallback(async () => {
-        setIsLoading(true);
-        try {
-            const response = await getAllProducts();
-            setProducts(response.data);
-        } catch (error) {
-            toast({ variant: "destructive", title: "Failed to load products", description: "Could not fetch product data." });
-        } finally {
-            setIsLoading(false);
-        }
-    }, [toast]);
+    setIsLoading(true);
+    try {
+        const data = await getProducts();
+        const productArray = Array.isArray(data.content) ? data.content : Array.isArray(data) ? data : [];
+        setProducts(productArray.filter(p => p && p.id)); // filter out invalid products
+    } catch (error) {
+        toast({
+            variant: "destructive",
+            title: "Failed to load products",
+            description: "Could not fetch product data."
+        });
+    } finally {
+        setIsLoading(false);
+    }
+}, [toast]);
 
-    useEffect(() => {
-        fetchProducts();
-    }, [fetchProducts]);
+
+useEffect(() => {
+    fetchProducts();
+}, [fetchProducts]);
+
 
     const filteredProducts = useMemo(() => {
         return products.filter(p => p.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()));
@@ -194,8 +202,22 @@ export default function AdminUpdateProductPage() {
     };
 
     const handleProductUpdate = (updatedProduct) => {
-        setProducts(prev => prev.map(p => p.id === updatedProduct.id ? updatedProduct : p));
-    };
+    if (!updatedProduct?.id) {
+        console.error("Updated product is invalid:", updatedProduct);
+        toast({
+            variant: "destructive",
+            title: "Update Failed",
+            description: "Invalid product data returned from API."
+        });
+        return;
+    }
+
+    setProducts(prev =>
+        prev?.map?.(p => p?.id === updatedProduct.id ? updatedProduct : p) || []
+    );
+};
+
+
 
     const handleDeleteProduct = async (productId) => {
         try {

@@ -8,29 +8,36 @@ const productApiClient = axios.create({
   },
 });
 
-export const getProducts = (filters = {}) => {
-  return productApiClient.get('/filterPage', { params: filters }).then(res => res.data);
+export const getProducts = async (filters = {}) => {
+  const response = await productApiClient.get('/filterPage', { params: filters });
+  return response.data;
 };
 
-export const getAllProducts = () => {
-    return productApiClient.get('/allItems');
+export const getAllProducts = async () => {
+    const response = await productApiClient.get('/allItems');
+    return response.data;
 };
 
 
-export const getProductById = (id) => {
-    return productApiClient.get(`/${id}`);
+export const getProductById = async (id) => {
+    const response = await productApiClient.get(`/${id}`);
+    return response.data;
 };
 
 // Admin-specific functions that will require authentication later
 // For now, they use the same public client. We can refactor this when building the admin dashboard.
-export const addProduct = (productData) => {
-    return productApiClient.post('/', productData);
+export const addProduct = async (productData) => {
+    const response = await productApiClient.post('/', productData);
+    return response.data;
 };
 
-export const updateProduct = (id, productData) => {
-    return productApiClient.put(`/${id}`, productData);
+export const updateProduct = async (id, productData) => {
+    const response = await productApiClient.put(`/${id}`, productData);
+    return response.data;
 };
 
-export const deleteProduct = (id) => {
-    return productApiClient.delete(`/${id}`);
+export const deleteProduct = async (id) => {
+    const response = await productApiClient.delete(`/${id}`);
+    return response.data;
 };
+
