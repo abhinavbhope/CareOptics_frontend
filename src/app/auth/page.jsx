@@ -1,3 +1,4 @@
+"use client";
 import { AuthForm } from '@/components/opticare/AuthForm';
 import Link from 'next/link';
 import { Eye } from 'lucide-react';
