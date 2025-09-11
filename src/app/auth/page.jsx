@@ -2,6 +2,7 @@
 import { AuthForm } from '@/components/opticare/AuthForm';
 import Link from 'next/link';
 import { Eye } from 'lucide-react';
+import { Suspense } from 'react';
 
 export default function AuthPage() {
   return (
@@ -12,7 +13,9 @@ export default function AuthPage() {
             <span className="font-headline">CareOptics</span>
         </Link>
        </div>
-      <AuthForm />
+      <Suspense fallback={<div className="text-sm text-muted-foreground">Loading…</div>}>
+        <AuthForm />                                     {/* wrapped once, here */}
+      </Suspense>
     </div>
   );
 }
