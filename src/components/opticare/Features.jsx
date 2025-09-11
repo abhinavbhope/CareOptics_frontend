@@ -7,8 +7,8 @@ import { Smartphone, CalendarDays, Glasses, Sparkles } from 'lucide-react';
 const features = [
   {
     icon: <Smartphone className="h-8 w-8 text-primary" />,
-    title: 'Virtual Try-On',
-    description: 'Use your camera to try on hundreds of frames from the comfort of your home.',
+    title: 'Varety of Frames',
+    description: 'Choose from a wide selection of stylish frames that suit your personality and style.',
   },
   {
     icon: <CalendarDays className="h-8 w-8 text-primary" />,

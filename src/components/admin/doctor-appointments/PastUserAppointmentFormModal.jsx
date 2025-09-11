@@ -1,0 +1,139 @@
+
+"use client";
+
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
+import { useState, useEffect } from 'react';
+import { Loader2, Calendar as CalendarIcon } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { addAppointmentToPastUser } from '@/lib/admin/doctorPastUserApi';
+import { updateAppointmentForUser } from '@/lib/admin/doctorAppointmentAdminApi';
+
+
+const appointmentSchema = z.object({
+  reasonForVisit: z.string().min(5, "Please provide a reason for your visit."),
+  appointmentDate: z.date({
+    required_error: "An appointment date is required.",
+  }).refine(date => date > new Date(), { message: "Appointment date must be in the future." }),
+});
+
+export function PastUserAppointmentFormModal({ isOpen, onClose, onSuccess, user, appointment = null }) {
+    const { toast } = useToast();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const form = useForm({
+        resolver: zodResolver(appointmentSchema),
+        defaultValues: {
+            reasonForVisit: "", 
+            appointmentDate: null
+        }
+    });
+
+    useEffect(() => {
+        if (appointment) {
+            form.reset({
+                ...appointment,
+                appointmentDate: new Date(appointment.appointmentDate),
+            });
+        } else {
+             form.reset({
+                reasonForVisit: "", 
+                appointmentDate: null
+            });
+        }
+    }, [appointment, form]);
+
+    async function onSubmit(values) {
+        setIsSubmitting(true);
+        try {
+            const submissionData = {
+                ...values,
+                appointmentDate: values.appointmentDate.toISOString(),
+            };
+            
+            let response;
+            if (appointment) {
+                // The update operation needs more details than the add operation
+                const updatePayload = {
+                    ...submissionData,
+                    patientName: appointment.patientName,
+                    age: appointment.age,
+                    phone: appointment.phone,
+                    address: appointment.address,
+                    userId: null
+                }
+                response = await updateAppointmentForUser(appointment.id, updatePayload);
+                toast({ title: "Appointment Updated", description: "The appointment has been successfully updated." });
+            } else {
+                response = await addAppointmentToPastUser(user.id, submissionData);
+                toast({ title: "Appointment Created", description: "New appointment has been booked." });
+            }
+            onSuccess(response.data);
+        } catch (error) {
+            toast({
+                variant: 'destructive',
+                title: 'Operation Failed',
+                description: error.response?.data?.message || "An unexpected error occurred.",
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
+    }
+
+    return (
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className="sm:max-w-lg">
+                <DialogHeader>
+                    <DialogTitle>{appointment ? 'Edit Appointment' : 'New Appointment'} for {user?.name}</DialogTitle>
+                    <DialogDescription>
+                        Fill in the details below to {appointment ? 'update' : 'create'} an appointment.
+                    </DialogDescription>
+                </DialogHeader>
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                         <FormField control={form.control} name="reasonForVisit" render={({ field }) => (
+                            <FormItem><FormLabel>Reason for Visit</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                         <FormField control={form.control} name="appointmentDate" render={({ field }) => (
+                            <FormItem className="flex flex-col"><FormLabel>Appointment Date</FormLabel>
+                                <Popover><PopoverTrigger asChild><FormControl>
+                                    <Button variant={"outline"} className={cn("pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
+                                        {field.value ? format(field.value, "PPP HH:mm") : <span>Pick a date and time</span>}
+                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                    </Button>
+                                </FormControl></PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                    <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date < new Date(new Date().setHours(0,0,0,0))} initialFocus />
+                                    <div className="p-3 border-t border-border"><Input type="time" onChange={(e) => {
+                                        const [hours, minutes] = e.target.value.split(':');
+                                        const newDate = new Date(field.value);
+                                        newDate.setHours(parseInt(hours), parseInt(minutes));
+                                        field.onChange(newDate);
+                                    }} /></div>
+                                </PopoverContent></Popover>
+                                <FormMessage />
+                            </FormItem>
+                         )} />
+                        <DialogFooter className="pt-4">
+                            <DialogClose asChild><Button type="button" variant="secondary">Cancel</Button></DialogClose>
+                            <Button type="submit" disabled={isSubmitting}>
+                                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                {appointment ? 'Save Changes' : 'Create Appointment'}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </Form>
+            </DialogContent>
+        </Dialog>
+    );
+}

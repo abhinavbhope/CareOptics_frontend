@@ -8,21 +8,21 @@ const steps = [
     step: 1,
     title: 'Book an Appointment',
     description: 'Easily find and book an appointment with a verified optometrist near you. Our platform simplifies the process, saving you time and hassle.',
-    image: 'https://placehold.co/500x500.png',
+    image: '/images/appointment.jpeg',
     aiHint: 'online appointment booking'
   },
   {
     step: 2,
     title: 'Get Your Prescription',
     description: 'Have a comprehensive eye exam and get your updated prescription. Your details are securely stored on your OptiCare profile for easy access.',
-    image: 'https://placehold.co/500x500.png',
+    image: '/images/pres.jpeg',
     aiHint: 'virtual eye exam'
   },
   {
     step: 3,
     title: 'Choose Your Eyewear',
     description: 'Browse our vast collection of frames and lenses. Use our virtual try-on feature to see how they look on you before you buy.',
-    image: 'https://placehold.co/500x500.png',
+    image: '/images/var.jpg',
     aiHint: 'choosing glasses online'
   },
 ];

@@ -24,7 +24,7 @@ export function WhyOptiCare() {
             transition={{ duration: 0.6 }}
           >
             <Image
-              src="https://placehold.co/550x550.png"
+              src="/images/clear.jpg"
               alt="Friendly Optician"
               width={550}
               height={550}

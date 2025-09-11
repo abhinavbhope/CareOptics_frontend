@@ -10,7 +10,7 @@ export function Footer() {
           <div className="flex flex-col gap-4">
             <Link href="/" className="flex items-center gap-2 font-bold text-xl">
               <Eye className="h-7 w-7 text-primary" />
-              <span className="font-headline">OptiCare</span>
+              <span className="font-headline">CareOptics</span>
             </Link>
             <p className="text-muted-foreground text-sm">
               Revolutionizing eye care for the digital age.
@@ -43,7 +43,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-12 pt-8 border-t flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} OptiCare. All rights reserved.</p>
+          <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} CareOptics. All rights reserved.</p>
           <div className="flex gap-2">
             <Button variant="ghost" size="icon" asChild>
               <Link href="#" aria-label="Twitter"><Twitter className="h-5 w-5" /></Link>

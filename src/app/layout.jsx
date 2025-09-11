@@ -5,7 +5,7 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata = {
-  title: 'OptiCare - Modern Eyewear & Eye Care',
+  title: 'CareOtpics - Modern Eyewear & Eye Care',
   description: 'Discover the future of eye care with OptiCare. Find the perfect eyewear and get comprehensive eye exams, all in one place.',
 };
 
