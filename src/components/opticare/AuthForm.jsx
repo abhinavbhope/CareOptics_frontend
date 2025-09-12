@@ -316,114 +316,197 @@ export function AuthForm({ onLoginSuccess }) {
     </>
   );
 
-  const renderRegister = () => (
-    <>
-        {flowStep === 'details' && (
-            <>
-            <CardHeader>
-                <CardTitle>Create an Account</CardTitle>
-                <CardDescription>It's quick and easy. We'll send an OTP to your email for verification.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Form {...registerForm}>
-                    <form onSubmit={registerForm.handleSubmit(onRegisterDetailsSubmit)} className="space-y-4">
-                    <FormField control={registerForm.control} name="name" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Full Name</FormLabel>
-                        <FormControl><Input placeholder="John Doe" {...field} disabled={isLoading} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                    )} />
-                     <div className="grid grid-cols-2 gap-4">
-                        <FormField control={registerForm.control} name="phone" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Phone</FormLabel>
-                                <FormControl><Input placeholder="123-456-7890" {...field} disabled={isLoading} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                        <FormField control={registerForm.control} name="age" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Age</FormLabel>
-                                <FormControl><Input type="number" placeholder="e.g., 25" {...field} disabled={isLoading} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                            
-                        )} />
-                        <FormField control={registerForm.control} name="address" render={({ field }) => (
-  <FormItem>
-    <FormLabel>Address</FormLabel>
-    <FormControl>
-      <Input placeholder="123 Main Street" {...field} disabled={isLoading} />
-    </FormControl>
-    <FormMessage />
-  </FormItem>
-)} />
+const renderRegister = () => (
+  <>
+    {flowStep === "details" && (
+      <>
+        <CardHeader>
+          <CardTitle>Create an Account</CardTitle>
+          <CardDescription>
+            It's quick and easy. We'll send an OTP to your email for verification.
+          </CardDescription>
+        </CardHeader>
 
-                    </div>
-                    <FormField control={registerForm.control} name="email" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl><Input placeholder="you@example.com" {...field} disabled={isLoading} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                    )} />
-                    <FormField control={registerForm.control} name="password" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                        <div className="relative">
-                            <Input type={showPassword ? "text" : "password"} placeholder="••••••••" {...field} disabled={isLoading}/>
-                            <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7" onClick={() => setShowPassword(!showPassword)}>
-                                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                            </Button>
-                        </div>
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                    )} />
-                    <Button type="submit" className="w-full" disabled={isLoading}>
-                        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Send OTP
-                    </Button>
-                    </form>
-                </Form>
-            </CardContent>
-            </>
-        )}
+        <CardContent>
+          <Form {...registerForm}>
+            <form
+              onSubmit={registerForm.handleSubmit(onRegisterDetailsSubmit)}
+              className="space-y-4"
+            >
+              {/* ----- Full Name ----- */}
+              <FormField
+                control={registerForm.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="John Doe" {...field} disabled={isLoading} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-        {flowStep === 'otp' && (
-             <>
-            <CardHeader>
-                <CardTitle>Verify Your Email</CardTitle>
-                <CardDescription>Enter the 6-digit code sent to <strong>{flowData?.email}</strong>.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Form {...otpForm}>
-                    <form onSubmit={otpForm.handleSubmit(onOtpSubmit)} className="space-y-6">
-                        <FormField control={otpForm.control} name="otp" render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>One-Time Password</FormLabel>
-                            <FormControl>
-                                <OtpInput value={field.value} onChange={field.onChange} numInputs={6} isDisabled={isLoading} />
-                            </FormControl>
-                            <FormMessage />
-                            </FormItem>
-                        )} />
-                        <Button type="submit" className="w-full" disabled={isLoading}>
-                            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Verify & Register
+              {/* ----- Phone | Age | Address (2-column grid) ----- */}
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={registerForm.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone</FormLabel>
+                      <FormControl>
+                        <Input placeholder="123-456-7890" {...field} disabled={isLoading} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={registerForm.control}
+                  name="age"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Age</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="e.g., 25" {...field} disabled={isLoading} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={registerForm.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem className="col-span-2">
+                      <FormLabel>Address</FormLabel>
+                      <FormControl>
+                        <Input placeholder="123 Main Street" {...field} disabled={isLoading} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* ----- Email ----- */}
+              <FormField
+                control={registerForm.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="you@example.com" {...field} disabled={isLoading} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* ----- Password (with live hint) ----- */}
+              <FormField
+                control={registerForm.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          {...field}
+                          disabled={isLoading}
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
+                          onClick={() => setShowPassword((s) => !s)}
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </Button>
-                    </form>
-                </Form>
-                <Button variant="link" className="mt-4 w-full" onClick={() => setFlowStep('details')} disabled={isLoading}>
-                    Back to registration details
-                </Button>
-            </CardContent>
-             </>
-        )}
-    </>
-  );
+                      </div>
+                    </FormControl>
+
+                    {/*  OPTIONAL BUT NICE : live hint  */}
+                    <p className="text-xs text-muted-foreground mt-1">{PASSWORD_HELP}</p>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* ----- Submit ----- */}
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Send OTP
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </>
+    )}
+
+    {/* ----------------  OTP STEP  ---------------- */}
+    {flowStep === "otp" && (
+      <>
+        <CardHeader>
+          <CardTitle>Verify Your Email</CardTitle>
+          <CardDescription>
+            Enter the 6-digit code sent to <strong>{flowData?.email}</strong>.
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent>
+          <Form {...otpForm}>
+            <form
+              onSubmit={otpForm.handleSubmit(onOtpSubmit)}
+              className="space-y-6"
+            >
+              <FormField
+                control={otpForm.control}
+                name="otp"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>One-Time Password</FormLabel>
+                    <FormControl>
+                      <OtpInput
+                        value={field.value}
+                        onChange={field.onChange}
+                        numInputs={6}
+                        isDisabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Verify & Register
+              </Button>
+            </form>
+          </Form>
+
+          <Button
+            variant="link"
+            className="mt-4 w-full"
+            onClick={() => setFlowStep("details")}
+            disabled={isLoading}
+          >
+            Back to registration details
+          </Button>
+        </CardContent>
+      </>
+    )}
+  </>
+);
   
   const renderForgotPassword = () => (
     <>
