@@ -16,7 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { registerUser, loginUser, verifyOtp, sendOtp, forgotPassword, resetPassword } from '@/lib/api';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { OtpInput } from '@/components/ui/otp-input';
-
+import { STRONG_PASSWORD,PASSWORD_HELP } from '@/lib/passwordPolicy';
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -24,12 +24,15 @@ const loginSchema = z.object({
 });
 
 const registerSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  phone: z.string().min(10, { message: "Phone must be at least 10 characters." }),
-  age: z.coerce.number().positive({ message: "Please enter a valid age." }).int(),
-  email: z.string().email({ message: "Invalid email address." }),
-  password: z.string().min(8, { message: "Password must be at least 8 characters." }),
-  address: z.string().min(5, { message: "Address must be at least 5 characters." }),
+  name: z.string().min(2, "Name must be at least 2 characters."),
+  phone: z.string().min(10, "Phone must be at least 10 characters."),
+  age: z.coerce.number().positive().int(),
+  email: z.string().email("Invalid email address."),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters.")
+    .regex(STRONG_PASSWORD, PASSWORD_HELP),
+  address: z.string().min(5, "Address must be at least 5 characters."),
 });
 
 const otpSchema = z.object({
@@ -41,7 +44,10 @@ const emailSchema = z.object({
 });
 
 const resetPasswordSchema = z.object({
-    newPassword: z.string().min(8, { message: "Password must be at least 8 characters." }),
+  newPassword: z
+    .string()
+    .min(8, "Password must be at least 8 characters.")
+    .regex(STRONG_PASSWORD, PASSWORD_HELP),
 });
 
 export function AuthForm({ onLoginSuccess }) {
