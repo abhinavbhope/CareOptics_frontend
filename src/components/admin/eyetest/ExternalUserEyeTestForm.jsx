@@ -91,16 +91,14 @@ const getSafeMeasurement = (measurement) => ({
 });
 
 const cleanMeasurement = (measurement) => {
-    const cleaned = { ...measurement };
-    for (const key in cleaned) {
-        if (key !== 'sph' && (cleaned[key] === '' || cleaned[key] === null || cleaned[key] === undefined)) {
-            delete cleaned[key];
-        } else if (typeof cleaned[key] === 'string' && cleaned[key] !== '' && !isNaN(parseFloat(cleaned[key]))) {
-            cleaned[key] = parseFloat(cleaned[key]);
-        }
-    }
-    return cleaned;
+  const cleaned = { ...measurement };
+  cleaned.sph = measurement?.sph ?? 0;
+  cleaned.cyl = cleaned.cyl === '' ? 0 : parseFloat(cleaned.cyl) || undefined;
+  cleaned.axis = cleaned.axis === '' ? 0 : parseInt(cleaned.axis, 10) || undefined;
+  cleaned.add  = cleaned.add  === '' ? 0 : parseFloat(cleaned.add)  || undefined;
+  return cleaned;
 };
+
 
 
 export function ExternalUserEyeTestForm({ existingUser = null, existingTest = null, onSuccess, onCancel }) {
